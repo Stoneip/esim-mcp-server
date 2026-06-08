@@ -36,12 +36,14 @@ Then just ask: *“I’m going to Japan for 7 days — find me an eSIM.”*
 | `search_plans` | Filter plans by `country`, `region`, `max_price_usd` |
 | `recommend_plan` | Best-value plan for a `country` (+ optional `days`) |
 | `get_plan` | One plan by `sku` or `id` |
-| `buy_esim` | Stripe payment link for a plan (needs buyer `email`); eSIM QR is emailed after payment |
+| `buy_esim` | Stripe payment link for a plan (needs buyer `email`); returns a `checkout_session_id` |
+| `get_qr_code` | Fetch the eSIM QR image(s) for a paid order by `checkout_session_id` — show them to the buyer directly |
 
 ### Recommended agent flow
 1. `recommend_plan` (or `search_plans`) → pick a plan
-2. `buy_esim` with the plan’s `sku` and the buyer’s `email`
-3. Hand the buyer the returned Stripe link — the eSIM QR arrives by email within ~1 minute
+2. `buy_esim` with the plan’s `sku` and the buyer’s `email` → returns a payment link + `checkout_session_id`
+3. Buyer opens the link and pays
+4. `get_qr_code` with the `checkout_session_id` → the AI shows the eSIM QR image right in the chat (also emailed to the buyer)
 
 ## Configuration
 
@@ -62,7 +64,7 @@ A hosted (remote) MCP endpoint is also available if you prefer no install: `http
 
 - Prices and checkout are always **USD**.
 - eSIMs are **data-only** — no phone number, no calls/SMS (use WhatsApp/LINE over data).
-- The eSIM QR code is delivered to the buyer's email; it is not returned to the agent.
+- After payment, `get_qr_code` returns the QR image(s) so the agent can show them in-chat; the QR is also emailed to the buyer.
 
 ## Develop
 

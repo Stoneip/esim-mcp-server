@@ -17,7 +17,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 
 const API_BASE = (process.env.ALTESIM_API_BASE || "https://altesim.com").replace(/\/$/, "");
-const VERSION = "0.1.0";
+const VERSION = "0.2.0";
 
 interface CatalogPlan {
   id: string;
@@ -164,6 +164,33 @@ server.tool(
     const out = j.result?.content?.[0]?.text;
     if (!out) return fail("Could not create a payment link. Please try again.");
     return { content: [{ type: "text" as const, text: out }], isError: j.result?.isError };
+  },
+);
+
+server.tool(
+  "get_qr_code",
+  "Fetch the eSIM QR code(s) for a paid order and show them to the buyer directly. Pass the checkout_session_id returned by buy_esim. If the buyer hasn't paid yet or the eSIM is still provisioning, returns a 'retry in ~30s' status. When ready, returns the QR image(s) to display plus the ICCID(s).",
+  { checkout_session_id: z.string().describe("The checkout_session_id from buy_esim.") },
+  async ({ checkout_session_id }) => {
+    const res = await fetch(`${API_BASE}/api/mcp`, {
+      method: "POST",
+      headers: { "content-type": "application/json", accept: "application/json" },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        id: 1,
+        method: "tools/call",
+        params: { name: "get_qr_code", arguments: { checkout_session_id } },
+      }),
+    });
+    const j = (await res.json()) as {
+      error?: { message?: string };
+      result?: { content?: Array<Record<string, unknown>>; isError?: boolean };
+    };
+    if (j.error) return fail(`get_qr_code error: ${j.error.message || "unknown"}`);
+    const content = j.result?.content;
+    if (!content || content.length === 0) return fail("No QR available yet. Retry in ~30s.");
+    // Relay text + image content blocks as-is so the client can display the QR inline.
+    return { content: content as never, isError: j.result?.isError };
   },
 );
 
