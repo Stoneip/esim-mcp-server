@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * esim-mcp-server — Model Context Protocol server for ALT eSIM (altesim.com).
  *

@@ -3,12 +3,7 @@
   "version": "0.2.0",
   "description": "MCP server for ALT eSIM — let AI agents and coding tools search and buy travel data eSIMs (altesim.com). Prices in USD.",
   "type": "module",
-  "bin": {
-    "esim-mcp-server": "dist/index.js"
-  },
-  "files": [
-    "dist"
-  ],
+  "private": true,
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
