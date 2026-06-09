@@ -2,7 +2,6 @@
   "name": "esim-mcp-server",
   "version": "0.2.0",
   "description": "MCP server for ALT eSIM — let AI agents and coding tools search and buy travel data eSIMs (altesim.com). Prices in USD.",
-  "mcpName": "io.github.stoneip/esim-mcp-server",
   "type": "module",
   "bin": {
     "esim-mcp-server": "dist/index.js"
@@ -13,8 +12,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "dev": "tsc && node dist/index.js",
-    "prepublishOnly": "npm run build"
+    "dev": "tsc && node dist/index.js"
   },
   "keywords": [
     "mcp",

@@ -4,29 +4,35 @@
 
 No API key needed to browse. Buying returns a **Stripe payment link** the buyer opens — the agent never touches card data.
 
-## 5-minute quickstart
+## Quickstart
 
-### Claude Code
-```bash
-claude mcp add esim -- npx -y esim-mcp-server
+### Option 1 — Hosted remote MCP (no install) ✅ recommended
+Add the hosted endpoint as a remote/custom MCP connector — nothing to install:
+
+```
+https://altesim.com/api/mcp
 ```
 
-### Claude Desktop
-Add to `claude_desktop_config.json`:
+- **Claude Code:** `claude mcp add --transport http altesim https://altesim.com/api/mcp`
+- **Claude Desktop / ChatGPT:** add a custom connector with the URL above.
+
+### Option 2 — Run this server locally (stdio, from source)
+```bash
+git clone https://github.com/Stoneip/esim-mcp-server.git
+cd esim-mcp-server && npm install && npm run build
+```
+Then point your MCP client at it:
 ```json
 {
   "mcpServers": {
-    "esim": { "command": "npx", "args": ["-y", "esim-mcp-server"] }
+    "esim": { "command": "node", "args": ["/absolute/path/to/esim-mcp-server/dist/index.js"] }
   }
 }
 ```
 
-### Any MCP client (stdio)
-```bash
-npx -y esim-mcp-server
-```
-
 Then just ask: *“I’m going to Japan for 7 days — find me an eSIM.”*
+
+> Not published to npm. Use the hosted URL (Option 1) for zero-install, or build from source (Option 2).
 
 ## Tools
 
@@ -58,21 +64,13 @@ This package is a thin [stdio](https://modelcontextprotocol.io/docs/concepts/tra
 - Browsing reads the open catalog: `GET https://altesim.com/api/catalog`
 - `buy_esim` calls the hosted MCP `create_checkout`, which returns a Stripe Checkout link
 
-A hosted (remote) MCP endpoint is also available if you prefer no install: `https://altesim.com/api/mcp` (Streamable HTTP).
+The hosted remote MCP endpoint `https://altesim.com/api/mcp` (Streamable HTTP) runs this same logic — use it for zero-install access.
 
 ## Notes
 
 - Prices and checkout are always **USD**.
 - eSIMs are **data-only** — no phone number, no calls/SMS (use WhatsApp/LINE over data).
 - After payment, `get_qr_code` returns the QR image(s) so the agent can show them in-chat; the QR is also emailed to the buyer.
-
-## Install from MCP directories
-
-This server is published to npm and listed in MCP registries, so you can install it from:
-
-- **npm**: `npm i -g esim-mcp-server` or just `npx -y esim-mcp-server`
-- **Smithery** (smithery.ai) — one-click install
-- **MCP Registry** (`io.github.stoneip/esim-mcp-server`), and auto-indexed by Glama / PulseMCP / mcp.so
 
 ## Develop
 
