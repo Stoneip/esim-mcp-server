@@ -66,6 +66,14 @@ A hosted (remote) MCP endpoint is also available if you prefer no install: `http
 - eSIMs are **data-only** — no phone number, no calls/SMS (use WhatsApp/LINE over data).
 - After payment, `get_qr_code` returns the QR image(s) so the agent can show them in-chat; the QR is also emailed to the buyer.
 
+## Install from MCP directories
+
+This server is published to npm and listed in MCP registries, so you can install it from:
+
+- **npm**: `npm i -g esim-mcp-server` or just `npx -y esim-mcp-server`
+- **Smithery** (smithery.ai) — one-click install
+- **MCP Registry** (`io.github.stoneip/esim-mcp-server`), and auto-indexed by Glama / PulseMCP / mcp.so
+
 ## Develop
 
 ```bash
